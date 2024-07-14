@@ -1,8 +1,15 @@
 import React from 'react'
+import { Outlet } from 'react-router'
 
 function Home() {
   return (
-    <div>Home</div>
+    <div>
+      Home
+      {/* {messgae component} */}
+      <section>
+        <Outlet/>
+      </section>
+    </div>
   )
 }
 

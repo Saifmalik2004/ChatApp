@@ -9,6 +9,8 @@ import CheckEmail from './pages/CheckEmail'
 import Home from './pages/Home'
 import MessagesPage from './components/MessagesPage.jsx'
 import { RouterProvider,createBrowserRouter } from 'react-router-dom'
+import AuthLayouts from './layout/Authlayouts.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
  
 
 
@@ -20,19 +22,28 @@ const  router = createBrowserRouter([
       children: [
           {
               path: "register",
-              element: <Register/>
+              element:<AuthLayouts><Register/></AuthLayouts> 
           },
           {
               path: "/email",
               element: (
-                  <CheckEmail/>
+                <AuthLayouts><CheckEmail/></AuthLayouts>
+                  
               ),
           },
           {
               path: "/password",
               element: (
-                  <CheckPassword/>
+                <AuthLayouts><CheckPassword/></AuthLayouts>
+                  
               ),
+          },
+          {
+           path:"/forgot-password",
+           element: (
+            <AuthLayouts><ForgotPassword/></AuthLayouts>
+              
+          )
           },
           {
               path: "",
