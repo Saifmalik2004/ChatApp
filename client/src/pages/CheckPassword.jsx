@@ -4,6 +4,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Avatar from '../components/Avatar';
 import conf from '../conf/conf';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '../redux/userSlice';
 
 const CheckPassword = () => {
   const [data, setData] = useState({
@@ -13,6 +15,7 @@ const CheckPassword = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch= useDispatch();
 
   useEffect(() => {
     if (!location?.state?.name) {
@@ -48,6 +51,9 @@ const CheckPassword = () => {
       toast.success(response.data.message);
 
       if (response.data.success) {
+        dispatch(setToken(response?.data?.token))
+        localStorage.setItem('token',response?.data?.token)
+
         setData({
           password: "",
           userId: location?.state?._id // Keep userId intact
