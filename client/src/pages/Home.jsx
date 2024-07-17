@@ -1,15 +1,17 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import conf from '../conf/conf';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setUser } from '../redux/userSlice';
+import { logout, setUser,setOnlineUser } from '../redux/userSlice';
 import SideBar from '../components/SideBar';
-
+import logo from "../assets/Screenshot 2024-07-14 104856.png"
+import io from "socket.io-client"
 function Home() {
   const user = useSelector(state=> state.user)
   const dispatch = useDispatch()
   const navigate= useNavigate()
+  const location= useLocation()
 
 
   console.log("user:",user)
@@ -21,7 +23,7 @@ function Home() {
             
             dispatch(setUser(response.data.data))
             
-            if (response.data.logout){
+            if (response.data.data.logout){
               dispatch(logout())
               navigate("/email")
             }
@@ -48,15 +50,49 @@ function Home() {
         fetchUserDetails();
     }, []);
 
+    // sockect connection
+    useEffect(() => {
+       const socketConnection = io(conf.backendUrl,{
+        auth:{
+            token:localStorage.getItem('token')
+        }
+       })
+
+       socketConnection.on('onlineUser',(data)=>{
+        console.log('data',data)
+        dispatch(setOnlineUser(data))
+       })
+
+       return()=>{
+        socketConnection.disconnect()
+       }
+    }, []);
+
+
+    console.log("loc",location)
+    const basePath=location.pathname==='/'
+
     return (
         <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
-           <section className='bg-white' >
+           <section className={`bg-white ${!basePath && "hidden"} lg:block`} >
             <SideBar/>
-           </section>
+           </section >
            {/* {messgae component} */}
-            <section>
+            <section className={`${basePath && 'hidden'}`}>
                 <Outlet />
             </section>
+            <div className={` justify-center items-center flex-col gap-2  hidden ${!basePath ? "hidden" : "lg:flex" }`}>
+            <div >
+              <img
+                src={logo}
+                width={250}
+                alt='logo'
+               
+              />
+            </div>
+            <p className='text-lg mt-2 text-slate-500'>Select user to send message</p>
+        </div>
+            
         </div>
     );
 }

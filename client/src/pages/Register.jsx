@@ -63,10 +63,11 @@ const RegisterPage = () => {
 
         }
     } catch (error) {
+      console.log(error)
         toast.error(error?.response?.data?.message)
     }
 
-    console.log('data', data);
+    
   };
 
   return (
