@@ -61,9 +61,12 @@ function EditUserDetails({ onclose, userdata }) {
         e.preventDefault()
         e.stopPropagation()
         const URL = `${conf.backendUrl}/api/update-user`
-
+        const cleanData = {
+            name: data.name,
+            profile_pic: data.profile_pic
+        };
     try {
-        const response = await axios.post(URL,data,{ withCredentials: true })
+        const response = await axios.post(URL,cleanData,{ withCredentials: true })
         
 
         toast.success(response?.data?.message)

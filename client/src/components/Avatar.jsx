@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PiUserCircle } from "react-icons/pi";
 import { useSelector } from 'react-redux';
 
 const Avatar = ({ userId, name, imageUrl, width, height }) => {
-    const onlineUser = useSelector(state => state?.user?.onlineuser)
+    const onlineUser = useSelector(state => state?.user?.onlineuser);
   
-  let avatarName = "";
+    let avatarName = "";
 
     if (name) {
         const splitName = name.split(" ");
@@ -28,8 +28,15 @@ const Avatar = ({ userId, name, imageUrl, width, height }) => {
         "bg-blue-200"
     ];
 
-    const randomNumber = Math.floor(Math.random() * bgColor.length);
-const isOnline = onlineUser.includes(userId)
+    const getRandomBgColor = () => bgColor[Math.floor(Math.random() * bgColor.length)];
+    const [randomBgColor, setRandomBgColor] = useState(getRandomBgColor);
+
+    const isOnline = onlineUser.includes(userId);
+
+    useEffect(() => {
+        setRandomBgColor(getRandomBgColor());
+    }, []); // Only run once
+
     return (
         <div 
             className={`text-slate-800 rounded-full shadow font-bold relative`} 
@@ -49,7 +56,7 @@ const isOnline = onlineUser.includes(userId)
                     name ? (
                         <div 
                             style={{ width: width + "px", height: height + "px" }} 
-                            className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${bgColor[randomNumber]}`}
+                            className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${randomBgColor}`}
                         >
                             {avatarName} 
                         </div>
@@ -59,11 +66,10 @@ const isOnline = onlineUser.includes(userId)
                 )
             }
             {
-isOnline &&(
-<div className="bg-green-500 p-1 absolute bottom-[1px] right-0 z-10 rounded-full  border-white border-[2px]"></div>
-)
+                isOnline && (
+                    <div className="bg-green-500 p-1 absolute bottom-[1px] right-0 z-10 rounded-full border-white border-[2px]"></div>
+                )
             }
-            
         </div>
     );
 }
