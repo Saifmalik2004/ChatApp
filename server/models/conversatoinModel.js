@@ -18,6 +18,11 @@ const messageSchema= new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    msgByUserId : {
+        type : mongoose.Schema.ObjectId,
+        required : true,
+        ref : 'User'
+    }
    
 },{
     timestamps:true
@@ -48,4 +53,4 @@ const conversationSchema= new mongoose.Schema({
 
 const ConversationModel= mongoose.model("Conversation",conversationSchema)
 const MessageModel= mongoose.model("Message",messageSchema)
-module.exports = {conversationSchema,MessageModel}
+module.exports = {ConversationModel,MessageModel}

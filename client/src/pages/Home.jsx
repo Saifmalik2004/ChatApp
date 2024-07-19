@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import conf from '../conf/conf';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setUser,setOnlineUser } from '../redux/userSlice';
+import { logout, setUser,setOnlineUser, setsocketConnection } from '../redux/userSlice';
 import SideBar from '../components/SideBar';
 import logo from "../assets/Screenshot 2024-07-14 104856.png"
 import io from "socket.io-client"
@@ -14,7 +14,7 @@ function Home() {
   const location= useLocation()
 
 
-  console.log("user:",user)
+  
     const URL = `${conf.backendUrl}/api/user-details`;
 
     const fetchUserDetails = async () => {
@@ -29,7 +29,7 @@ function Home() {
             }
 
 
-            console.log('Response user data:', response.data);
+            
         } catch (error) {
             if (error.response) {
                 // The request was made and the server responded with a status code
@@ -59,17 +59,18 @@ function Home() {
        })
 
        socketConnection.on('onlineUser',(data)=>{
-        console.log('data',data)
+        
         dispatch(setOnlineUser(data))
        })
 
+       dispatch(setsocketConnection(socketConnection))
        return()=>{
         socketConnection.disconnect()
        }
     }, []);
 
 
-    console.log("loc",location)
+    
     const basePath=location.pathname==='/'
 
     return (

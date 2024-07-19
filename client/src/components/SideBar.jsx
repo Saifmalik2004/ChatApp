@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IoChatbubbleEllipses } from 'react-icons/io5';
 import { FaUserPlus } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { useState } from 'react';
 import EditUserDetails from './EditUserDetails';
 import { logout } from '../redux/userSlice';
 import SearchUser from './SearchUser';
+import { FaImage } from "react-icons/fa6";
+import { FaVideo } from "react-icons/fa6";
 
 
 function SideBar() {
@@ -19,6 +21,41 @@ function SideBar() {
   const [editUserOpen, setEditUserOpen] = useState(false)
   const [allUser, setAllUser] = useState([])
   const [openSearchUser, setOpenSearchUser] = useState(false)
+  const socketConnection = useSelector(state => state?.user?.socketConnection);
+
+
+
+  useEffect(() => {
+    if (socketConnection) {
+      socketConnection.emit('sidebar', user._id)
+
+      socketConnection.on('conversation', (data) => {
+        
+
+        const conversationUserData = data.map((conversationUser, index) => {
+          if (conversationUser?.sender?._id === conversationUser?.receiver?._id) {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser?.sender
+            }
+          }
+          else if (conversationUser?.receiver?._id !== user?._id) {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser.receiver
+            }
+          } else {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser.sender
+            }
+          }
+        })
+
+        setAllUser(conversationUserData)
+      })
+    }
+  }, [socketConnection, user])
 
 
   const handleLogout = () => {
@@ -76,14 +113,64 @@ function SideBar() {
               </div>
             )
           }
+
+
+          {
+            allUser.map((conv, index) => {
+              return (
+                <NavLink to={"/" + conv?.userDetails?._id} key={conv?._id} className='flex items-center gap-2 py-3 px-2 border border-transparent hover:border-[#5b81a2] rounded hover:bg-slate-100 cursor-pointer'>
+                  <div>
+                    <Avatar
+                      imageUrl={conv?.userDetails?.profile_pic}
+                      name={conv?.userDetails?.name}
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <div>
+                    <h3 className='text-ellipsis line-clamp-1 font-semibold text-base'>{conv?.userDetails?.name}</h3>
+                    <div className='text-slate-500 text-xs flex items-center gap-1'>
+                      <div className='flex items-center gap-1'>
+                        {
+                          conv?.lastMsg?.imageUrl && (
+                            <div className='flex items-center gap-1'>
+                              <span><FaImage /></span>
+                              {!conv?.lastMsg?.text && <span>Image</span>}
+                            </div>
+                          )
+                        }
+                        {
+                          conv?.lastMsg?.videoUrl && (
+                            <div className='flex items-center gap-1'>
+                              <span><FaVideo /></span>
+                              {!conv?.lastMsg?.text && <span>Video</span>}
+                            </div>
+                          )
+                        }
+                      </div>
+                      <p className='text-ellipsis line-clamp-1'>{conv?.lastMsg?.text}</p>
+                    </div>
+                  </div>
+                  {
+                    Boolean(conv?.unseenMsg) && (
+                      <p className='text-xs w-6 h-6 flex justify-center items-center ml-auto p-1 bg-[#5b81a2] text-white font-semibold rounded-full'>{conv?.unseenMsg}</p>
+                    )
+                  }
+
+                </NavLink>
+              )
+            })
+          }
         </div>
       </div>
 
-      {/* {edituserdetail} */}
+
+
+      
       {
         editUserOpen && (<EditUserDetails onclose={() => setEditUserOpen(false)} userdata={user} />)
       }
-      {/* {search} */}
+      
       {
         openSearchUser && (
           <SearchUser onClose={() => setOpenSearchUser(false)} />

@@ -12,7 +12,7 @@ const Avatar = ({ userId, name, imageUrl, width, height }) => {
         if (splitName.length > 1) {
             avatarName = splitName[0][0] + splitName[1][0];
         } else {
-            avatarName = splitName[0][0];
+            avatarName = splitName[0][0]; 
         }
     }
 
@@ -51,7 +51,7 @@ const isOnline = onlineUser.includes(userId)
                             style={{ width: width + "px", height: height + "px" }} 
                             className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${bgColor[randomNumber]}`}
                         >
-                            {avatarName}
+                            {avatarName} 
                         </div>
                     ) : (
                         <PiUserCircle size={width} />
@@ -60,7 +60,7 @@ const isOnline = onlineUser.includes(userId)
             }
             {
 isOnline &&(
-<div className="bg-green-500 p-1 absolute bottom-2 right-0 z-10 rounded-full"></div>
+<div className="bg-green-500 p-1 absolute bottom-[1px] right-0 z-10 rounded-full  border-white border-[2px]"></div>
 )
             }
             
