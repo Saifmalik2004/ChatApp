@@ -12,7 +12,7 @@ import Home from './pages/Home';
 import MessagesPage from './components/MessagesPage.jsx';
 import AuthLayouts from './layout/Authlayouts.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx'; // Import the ProtectedRoute component
+
 import { store } from './redux/store.js';
 import './index.css';
 
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
       },
       {
         path: "",
-        element: <ProtectedRoute><Home /></ProtectedRoute>, // Wrap Home route with ProtectedRoute
+        element: <Home />, // Wrap Home route with ProtectedRoute
         children: [
           {
             path: ":userid",
