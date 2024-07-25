@@ -38,7 +38,7 @@ function MessagesPage() {
     if (currentMessage.current) {
       currentMessage.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [allMessage]);
+  }, [allMessage])
 
   const handleUploadImageVideoOpen = () => {
     setOpenImageVideoUpload(prev => !prev);
